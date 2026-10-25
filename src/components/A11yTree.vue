@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, ref, useId, watch } from "vue";
 import EditorPanel from "./EditorPanel.vue";
 import TreePanel from "./TreePanel.vue";
 import PreviewPanel from "./PreviewPanel.vue";
@@ -19,6 +19,11 @@ const showAll = ref(false);
 const showWarn = ref(true);
 const showPreview = ref(true);
 const activeTab = ref<Tab>("editor");
+
+// Explicit label/control ids (WCAG H44, helps voice control), unique per
+// viewer so several viewers can share one page
+const uid = useId();
+const idFor = (name: string) => `${uid}-${name}`;
 
 const { layout } = useLayoutPreference();
 const { wrap } = useWrapPreference();
@@ -65,9 +70,11 @@ watch(htmlContent, (val) => emit("update:html", val));
       <LayoutToggle v-model="layout" />
       <div class="ml-auto flex flex-wrap items-center gap-4">
         <label
+          :for="idFor('showAll')"
           class="flex cursor-pointer items-center gap-1.5 text-xs text-[var(--vp-c-text-2)] select-none focus-within:outline-2 focus-within:outline-sky-700 focus-within:outline-offset-2 rounded-sm"
         >
           <input
+            :id="idFor('showAll')"
             type="checkbox"
             v-model="showAll"
             class="cursor-pointer accent-sky-400"
@@ -75,9 +82,11 @@ watch(htmlContent, (val) => emit("update:html", val));
           Alle Elemente
         </label>
         <label
+          :for="idFor('showWarn')"
           class="flex cursor-pointer items-center gap-1.5 text-xs text-[var(--vp-c-text-2)] select-none focus-within:outline-2 focus-within:outline-sky-700 focus-within:outline-offset-2 rounded-sm"
         >
           <input
+            :id="idFor('showWarn')"
             type="checkbox"
             v-model="showWarn"
             class="cursor-pointer accent-sky-400"
@@ -85,24 +94,28 @@ watch(htmlContent, (val) => emit("update:html", val));
           Warnungen
         </label>
         <label
+          :for="idFor('wrap')"
           class="flex cursor-pointer items-center gap-1.5 text-xs text-[var(--vp-c-text-2)] select-none focus-within:outline-2 focus-within:outline-sky-700 focus-within:outline-offset-2 rounded-sm"
         >
           <input
-            type="checkbox"
-            v-model="showPreview"
-            class="cursor-pointer accent-sky-400"
-          />
-          Vorschau
-        </label>
-        <label
-          class="flex cursor-pointer items-center gap-1.5 text-xs text-[var(--vp-c-text-2)] select-none focus-within:outline-2 focus-within:outline-sky-700 focus-within:outline-offset-2 rounded-sm"
-        >
-          <input
+            :id="idFor('wrap')"
             type="checkbox"
             v-model="wrap"
             class="cursor-pointer accent-sky-400"
           />
           Zeilenumbruch
+        </label>
+        <label
+          :for="idFor('showPreview')"
+          class="flex cursor-pointer items-center gap-1.5 text-xs text-[var(--vp-c-text-2)] select-none focus-within:outline-2 focus-within:outline-sky-700 focus-within:outline-offset-2 rounded-sm"
+        >
+          <input
+            :id="idFor('showPreview')"
+            type="checkbox"
+            v-model="showPreview"
+            class="cursor-pointer accent-sky-400"
+          />
+          Vorschau
         </label>
       </div>
     </div>
@@ -110,7 +123,8 @@ watch(htmlContent, (val) => emit("update:html", val));
     <!-- Vertical layout -->
     <template v-if="layout === 'vertical'">
       <EditorPanel
-        v-model="htmlContent" :wrap="wrap"
+        v-model="htmlContent"
+        :wrap="wrap"
         class="border-b border-[var(--vp-c-divider)]"
       />
       <TreePanel :nodes="nodes" :show-all="showAll" :show-warn="showWarn" />
@@ -151,7 +165,7 @@ watch(htmlContent, (val) => emit("update:html", val));
           :key="tab.id"
           role="tab"
           :aria-selected="activeTab === tab.id"
-          :aria-controls="`tab-panel-${tab.id}`"
+          :aria-controls="idFor(`tab-panel-${tab.id}`)"
           @click="activeTab = tab.id"
           class="-mb-px border-b-2 px-4 py-2 text-xs font-medium transition-colors focus-visible:outline-2 -outline-offset-2 outline-sky-700"
           :class="
@@ -166,17 +180,18 @@ watch(htmlContent, (val) => emit("update:html", val));
 
       <!-- Tab panels -->
       <div
-        id="tab-panel-editor"
+        :id="idFor('tab-panel-editor')"
         role="tabpanel"
         :hidden="activeTab !== 'editor'"
       >
         <EditorPanel
           v-show="activeTab === 'editor'"
-          v-model="htmlContent" :wrap="wrap"
+          v-model="htmlContent"
+          :wrap="wrap"
           :show-label="false"
         />
       </div>
-      <div id="tab-panel-tree" role="tabpanel" :hidden="activeTab !== 'tree'">
+      <div :id="idFor('tab-panel-tree')" role="tabpanel" :hidden="activeTab !== 'tree'">
         <TreePanel
           v-show="activeTab === 'tree'"
           :nodes="nodes"
@@ -187,7 +202,7 @@ watch(htmlContent, (val) => emit("update:html", val));
       </div>
       <div
         v-if="showPreview"
-        id="tab-panel-preview"
+        :id="idFor('tab-panel-preview')"
         role="tabpanel"
         :hidden="activeTab !== 'preview'"
       >
