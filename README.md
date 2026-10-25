@@ -13,7 +13,7 @@ Der Viewer macht diesen sonst unsichtbaren Baum sichtbar. Er eignet sich für Le
 ## Funktionen
 
 - **Beispiele** zu Rolle, Name, Ausblenden, Zustand und Struktur sowie zu eigenen Widgets, Seitengerüst, Formularen, Tabellen und Live Regions – direkt verlinkbar (z. B. `#block-4`); eigene Änderungen bleiben pro Beispiel gespeichert und lassen sich zurücksetzen
-- **HTML-Editor** mit Syntax-Highlighting (CodeMirror)
+- **HTML-Editor** mit Syntax-Highlighting (CodeMirror) und optionalem Zeilenumbruch für lange Zeilen
 - **Accessibility Tree** mit Rolle, barrierefreiem Name und Zuständen je Element, live aktualisiert
 - **Live-Vorschau** des HTML in einem abgeschotteten iframe (ohne Skripte), um Fokus und Tastaturbedienung selbst auszuprobieren
 - **Implizite und explizite Rollen**: Native HTML-Semantik und `role`-Attribute werden unterschieden

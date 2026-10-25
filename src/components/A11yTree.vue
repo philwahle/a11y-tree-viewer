@@ -7,6 +7,7 @@ import Legend from "./Legend.vue";
 import LayoutToggle from "./LayoutToggle.vue";
 import { useA11yTree } from "./../composables/useA11yTree.ts";
 import { useLayoutPreference } from "./../composables/useLayoutPreference.ts";
+import { useWrapPreference } from "./../composables/useWrapPreference.ts";
 
 type Tab = "editor" | "tree" | "preview";
 
@@ -20,6 +21,7 @@ const showPreview = ref(true);
 const activeTab = ref<Tab>("editor");
 
 const { layout } = useLayoutPreference();
+const { wrap } = useWrapPreference();
 const { nodes } = useA11yTree(htmlContent);
 
 const tabs = computed(() => {
@@ -92,13 +94,23 @@ watch(htmlContent, (val) => emit("update:html", val));
           />
           Vorschau
         </label>
+        <label
+          class="flex cursor-pointer items-center gap-1.5 text-xs text-[var(--vp-c-text-2)] select-none focus-within:outline-2 focus-within:outline-sky-700 focus-within:outline-offset-2 rounded-sm"
+        >
+          <input
+            type="checkbox"
+            v-model="wrap"
+            class="cursor-pointer accent-sky-400"
+          />
+          Zeilenumbruch
+        </label>
       </div>
     </div>
 
     <!-- Vertical layout -->
     <template v-if="layout === 'vertical'">
       <EditorPanel
-        v-model="htmlContent"
+        v-model="htmlContent" :wrap="wrap"
         class="border-b border-[var(--vp-c-divider)]"
       />
       <TreePanel :nodes="nodes" :show-all="showAll" :show-warn="showWarn" />
@@ -113,7 +125,7 @@ watch(htmlContent, (val) => emit("update:html", val));
     <template v-else-if="layout === 'side'">
       <div class="flex">
         <div class="min-w-0 flex-1 border-r border-[var(--vp-c-divider)]">
-          <EditorPanel v-model="htmlContent" />
+          <EditorPanel v-model="htmlContent" :wrap="wrap" />
         </div>
         <div class="min-w-0 flex-1">
           <TreePanel :nodes="nodes" :show-all="showAll" :show-warn="showWarn" />
@@ -160,7 +172,7 @@ watch(htmlContent, (val) => emit("update:html", val));
       >
         <EditorPanel
           v-show="activeTab === 'editor'"
-          v-model="htmlContent"
+          v-model="htmlContent" :wrap="wrap"
           :show-label="false"
         />
       </div>

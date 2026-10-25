@@ -12,8 +12,10 @@ const props = withDefaults(
   defineProps<{
     modelValue: string;
     showLabel?: boolean;
+    /** Soft-wrap long lines instead of scrolling horizontally. */
+    wrap?: boolean;
   }>(),
-  { showLabel: true },
+  { showLabel: true, wrap: false },
 );
 
 const emit = defineEmits<{ "update:modelValue": [value: string] }>();
@@ -27,6 +29,9 @@ const { isDark } = useDarkClass();
 
 let view: EditorView | null = null;
 const themeCompartment = new Compartment();
+const wrapCompartment = new Compartment();
+
+const wrapExtension = (wrap: boolean) => (wrap ? EditorView.lineWrapping : []);
 
 onMounted(() => {
   // At least MIN_LINES lines tall (plus content padding), even when empty
@@ -71,6 +76,7 @@ onMounted(() => {
         html(),
         baseTheme,
         themeCompartment.of(isDark.value ? oneDark : []),
+        wrapCompartment.of(wrapExtension(props.wrap)),
         EditorView.updateListener.of((update) => {
           if (update.docChanged) {
             emit("update:modelValue", update.state.doc.toString());
@@ -87,6 +93,13 @@ onMounted(() => {
 watch(isDark, (dark) => {
   view?.dispatch({ effects: themeCompartment.reconfigure(dark ? oneDark : []) });
 });
+
+watch(
+  () => props.wrap,
+  (wrap) => {
+    view?.dispatch({ effects: wrapCompartment.reconfigure(wrapExtension(wrap)) });
+  },
+);
 
 onUnmounted(() => {
   view?.destroy();
