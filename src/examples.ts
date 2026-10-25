@@ -279,8 +279,8 @@ export const EXAMPLES: Example[] = [
     description:
       "Kopieren Sie einen HTML-Ausschnitt von einer echten Webseite in den Editor und prüfen Sie, ob Aussehen und Baum zusammenpassen.",
     group: "eigenes",
-    html: `<!-- Fügen Sie hier einen Schnipsel von einer echten Webseite ein -->
-`,
+    // Three trailing empty lines give room to click into and paste
+    html: `<!-- Fügen Sie hier einen Schnipsel von einer echten Webseite ein  -->\n\n\n`,
   },
 ];
 

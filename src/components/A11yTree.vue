@@ -38,9 +38,11 @@ watch(showPreview, (val) => {
 watch(
   () => props.html,
   (val) => {
-    // Skip our own echo via update:html, otherwise trimming eats typed newlines
+    // Skip our own echo via update:html, otherwise this would rewrite typed text
     if (val === undefined || val === htmlContent.value) return;
-    htmlContent.value = val.trim();
+    // Drop leading blank lines of template literals; trailing empty lines stay
+    // so a snippet can offer room to type below
+    htmlContent.value = val.replace(/^(\s*\n)+/, "");
   },
   {
     immediate: true,

@@ -38,10 +38,12 @@ export function useExamples() {
   const current = computed<Example>(() => findExample(currentId.value)!);
 
   const html = computed({
-    get: () => edits.value[currentId.value] ?? current.value.html.trim(),
+    get: () => edits.value[currentId.value] ?? current.value.html,
     set: (val: string) => {
       const next = { ...edits.value };
-      if (val.trim() === current.value.html.trim()) delete next[currentId.value];
+      // Exact compare: a trimmed one would treat added blank lines as "no
+      // edit" and snap the editor back to the original
+      if (val === current.value.html) delete next[currentId.value];
       else next[currentId.value] = val;
       edits.value = next;
       saveEdits(next);
@@ -51,7 +53,7 @@ export function useExamples() {
   const isEdited = (id: string) => id in edits.value;
 
   function reset() {
-    html.value = current.value.html.trim();
+    html.value = current.value.html;
   }
 
   const onHashChange = () => (currentId.value = idFromHash());
