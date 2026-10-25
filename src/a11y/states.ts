@@ -53,6 +53,12 @@ export function getStates(el: Element): States {
       s.checked = "true";
   }
 
+  if (tag === "summary" && !s.expanded) {
+    const details = el.parentElement;
+    if (details?.tagName.toLowerCase() === "details")
+      s.expanded = details.hasAttribute("open") ? "true" : "false";
+  }
+
   const hm = tag.match(/^h([1-6])$/);
   if (hm && !s.level) s.level = hm[1];
 
