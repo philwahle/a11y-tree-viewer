@@ -1,1 +1,51 @@
+:root {
+  --vp-c-bg-soft: #f6f6f7;
+  --vp-c-bg-mute: #e2e2e3;
+  --vp-c-divider: #e2e2e3;
+  --vp-c-text-1: #213547;
+  --vp-c-text-2: #3c5064;
+  --vp-c-text-3: #6b7d8f;
+
+  /** Custom colors for a11y tree viewer */
+
+  --custom-color-blue-50: #e6f1fb;
+  --custom-color-blue-100: #b5d4f4;
+
+  --custom-color-blue-700: #185fa5;
+  --custom-color-blue-800: #0c447c;
+
+  --custom-color-green-50: #e1f5ee;
+  --custom-color-green-100: #9fe1cb;
+
+  --custom-color-green-700: #0f6e56;
+  --custom-color-green-800: #085041;
+
+  --custom-color-amber-50: #faeeda;
+  --custom-color-amber-100: #fac775;
+
+  --custom-color-amber-700: #854f0b;
+  --custom-color-amber-800: #633806;
+
+  --custom-color-purple-50: #eeedfe;
+  --custom-color-purple-100: #cecbf6;
+
+  --custom-color-purple-700: #534ab7;
+  --custom-color-purple-800: #3c3489;
+
+  --custom-color-red-50: #fbeaf0;
+  --custom-color-red-100: #f4c0d1;
+
+  --custom-color-red-700: #993556;
+  --custom-color-red-800: #72243e;
+}
+
+html.dark {
+  --vp-c-bg-soft: #202127;
+  --vp-c-bg-mute: #2c2c32;
+  --vp-c-divider: #3c3f44;
+  --vp-c-text-1: #f0f0f2;
+  --vp-c-text-2: #b8bcc2;
+  --vp-c-text-3: #8a8f98;
+}
+
 @import "tailwindcss";
