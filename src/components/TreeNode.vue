@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import TreeNode from "./TreeNode.vue";
-import { getRoleCat, ROLE_DESC } from "./../composables/useA11yTree";
+import { getRoleCat, ROLE_DESC } from "./../a11y/roles";
 import type { A11yNode, RoleCategory } from "./../types/a11y";
 
 import {

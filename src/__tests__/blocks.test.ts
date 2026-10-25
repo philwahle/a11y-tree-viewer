@@ -1,7 +1,7 @@
 // Locks the behaviour the handed-out exercise sheet (blocks 1–5) relies on,
 // including the deliberate simplifications of block 4.
 import { describe, expect, it } from "vitest";
-import { buildTree } from "../composables/useA11yTree";
+import { buildTree } from "../a11y/tree";
 import { byRole, byTag, find, findAll } from "./helpers";
 
 describe("Block 1 — Rolle kommt nicht vom Aussehen", () => {
