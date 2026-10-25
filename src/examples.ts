@@ -12,7 +12,7 @@ export type Example = {
 export const EXAMPLES: Example[] = [
   {
     id: "block-1",
-    label: "1 · Rolle",
+    label: "1. Rolle",
     title: "Block 1 — Rolle kommt nicht vom Aussehen",
     description:
       "<a> ohne href und ein klickbares <div> sehen aus wie ein Link bzw. ein Button — sind es im Baum aber nicht.",
@@ -31,7 +31,7 @@ export const EXAMPLES: Example[] = [
   },
   {
     id: "block-2",
-    label: "2 · Name",
+    label: "2. Name",
     title: "Block 2 — Sichtbar vs. zugänglich benannt",
     description:
       "Ein Element kann optisch komplett fertig aussehen und trotzdem keinen (oder den falschen) Namen für assistive Technologien haben.",
@@ -60,7 +60,7 @@ export const EXAMPLES: Example[] = [
   },
   {
     id: "block-3",
-    label: "3 · Ausblenden",
+    label: "3. Ausblenden",
     title: "Block 3 — Verschwinden aus dem Baum",
     description:
       "Manche Attribute entfernen ein Element komplett aus der Wahrnehmung assistiver Technologien — obwohl es visuell weiter da ist.",
@@ -79,7 +79,7 @@ export const EXAMPLES: Example[] = [
   },
   {
     id: "block-4",
-    label: "4 · Zustand",
+    label: "4. Zustand",
     title: "Block 4 — Der Baum ist blind für Verhalten",
     description:
       "Ob ein Element als deaktiviert gilt, steht im Baum — wie es sich tatsächlich verhält, zeigt erst die Vorschau mit Maus und Tastatur.",
@@ -99,7 +99,7 @@ export const EXAMPLES: Example[] = [
   },
   {
     id: "block-5",
-    label: "5 · Struktur",
+    label: "5. Struktur",
     title: "Block 5 — Struktur kommt vom Tag, nicht vom Style",
     description:
       "Listen, Bereiche und Navigation können per CSS beliebig aussehen — ihre Bedeutung im Baum kommt allein vom HTML-Element.",
