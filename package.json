@@ -9,9 +9,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@codemirror/lang-html": "^6.4.12",
+    "@codemirror/theme-one-dark": "^6.1.3",
+    "@tailwindcss/vite": "^4.3.3",
+    "codemirror": "^6.0.2",
+    "lucide-vue-next": "^1.0.0",
+    "tailwindcss": "^4.3.3",
     "vue": "^3.5.44"
   },
   "devDependencies": {
+    "@types/codemirror": "^5.60.18",
     "@types/node": "^24.19.2",
     "@vitejs/plugin-vue": "^6.0.10",
     "@vue/tsconfig": "^0.9.1",
