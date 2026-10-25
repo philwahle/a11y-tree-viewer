@@ -18,6 +18,10 @@ const props = withDefaults(
 
 const emit = defineEmits<{ "update:modelValue": [value: string] }>();
 
+const MIN_LINES = 4;
+const LINE_HEIGHT = 1.65;
+const CONTENT_PADDING_Y = "0.75rem";
+
 const editorRef = ref<HTMLDivElement>();
 const { isDark } = useDarkClass();
 
@@ -25,10 +29,12 @@ let view: EditorView | null = null;
 const themeCompartment = new Compartment();
 
 onMounted(() => {
+  // At least MIN_LINES lines tall (plus content padding), even when empty
+  const minHeight = `calc(${MIN_LINES} * ${LINE_HEIGHT}em + 2 * ${CONTENT_PADDING_Y})`;
+
   // Base theme: auto-height with min/max + VitePress font/color vars
   const baseTheme = EditorView.theme({
     "&": {
-      minHeight: "5rem",
       maxHeight: "26rem",
       fontSize: "1rem",
       backgroundColor: "var(--vp-c-bg-mute)",
@@ -36,12 +42,14 @@ onMounted(() => {
     ".cm-scroller": {
       overflow: "auto",
       fontFamily: "var(--vp-font-family-mono, ui-monospace, monospace)",
-      lineHeight: "1.65",
+      lineHeight: String(LINE_HEIGHT),
     },
     ".cm-content": {
-      padding: "0.75rem 1rem",
+      padding: `${CONTENT_PADDING_Y} 1rem`,
+      minHeight,
       caretColor: "var(--vp-c-text-1)",
     },
+    ".cm-gutter": { minHeight },
     ".cm-focused": { outline: "none" },
     ".cm-line": { padding: "0" },
     "&.cm-focused .cm-cursor": { borderLeftColor: "var(--vp-c-text-1)" },
