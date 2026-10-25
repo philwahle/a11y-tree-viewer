@@ -4,12 +4,25 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Accessibility Tree Viewer (Dev)</title>
+    <meta
+      name="description"
+      content="Interaktives Lernwerkzeug: Aus HTML-Code den Accessibility Tree ableiten – mit Rolle, Name und Zustand jedes Elements."
+    />
+    <title>Accessibility Tree Viewer</title>
+    <script>
+      // Apply the stored color scheme before first paint (see useTheme.ts)
+      try {
+        const mode = localStorage.getItem("a11y-tree-theme");
+        const dark =
+          mode === "dark" ||
+          (mode !== "light" &&
+            matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", dark);
+      } catch {}
+    </script>
   </head>
   <body>
-    <main class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div id="app"></div>
-    </main>
+    <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
