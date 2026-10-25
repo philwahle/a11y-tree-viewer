@@ -170,14 +170,12 @@ const TAG_ROLES: Record<string, string> = {
   dt: "term",
   fieldset: "group",
   figure: "figure",
-  footer: "contentinfo",
   h1: "heading",
   h2: "heading",
   h3: "heading",
   h4: "heading",
   h5: "heading",
   h6: "heading",
-  header: "banner",
   hr: "separator",
   li: "listitem",
   main: "main",
@@ -201,6 +199,9 @@ const TAG_ROLES: Record<string, string> = {
   tr: "row",
   ul: "list",
 };
+
+/** header/footer inside these are page-section scoped and lose their landmark. */
+const SECTIONING_SELECTOR = "article, aside, main, nav, section";
 
 const INPUT_TYPE_ROLES: Record<string, string> = {
   checkbox: "checkbox",
@@ -242,6 +243,12 @@ function getImplicitRole(el: Element, tag: string): string | null {
     case "a":
     case "area":
       return el.hasAttribute("href") ? "link" : null;
+    case "header":
+      return el.parentElement?.closest(SECTIONING_SELECTOR) ? null : "banner";
+    case "footer":
+      return el.parentElement?.closest(SECTIONING_SELECTOR)
+        ? null
+        : "contentinfo";
     case "form":
       return hasName ? "form" : null;
     case "section":
