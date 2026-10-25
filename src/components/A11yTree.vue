@@ -1,31 +1,53 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import EditorPanel from "./EditorPanel.vue";
 import TreePanel from "./TreePanel.vue";
+import PreviewPanel from "./PreviewPanel.vue";
 import Legend from "./Legend.vue";
 import LayoutToggle from "./LayoutToggle.vue";
 import { useA11yTree } from "./../composables/useA11yTree.ts";
 import { useLayoutPreference } from "./../composables/useLayoutPreference.ts";
 
+type Tab = "editor" | "tree" | "preview";
+
 const props = defineProps<{ html?: string }>();
+const emit = defineEmits<{ "update:html": [value: string] }>();
 
 const htmlContent = ref("");
 const showAll = ref(false);
 const showWarn = ref(true);
-const activeTab = ref<"editor" | "tree">("editor");
+const showPreview = ref(true);
+const activeTab = ref<Tab>("editor");
 
 const { layout } = useLayoutPreference();
 const { nodes } = useA11yTree(htmlContent);
 
+const tabs = computed(() => {
+  const all: { id: Tab; label: string }[] = [
+    { id: "editor", label: "HTML-Editor" },
+    { id: "tree", label: "Accessibility Tree" },
+    { id: "preview", label: "Vorschau" },
+  ];
+  return showPreview.value ? all : all.filter((t) => t.id !== "preview");
+});
+
+watch(showPreview, (val) => {
+  if (!val && activeTab.value === "preview") activeTab.value = "editor";
+});
+
 watch(
   () => props.html,
   (val) => {
-    if (val !== undefined) htmlContent.value = val.trim();
+    // Skip our own echo via update:html, otherwise trimming eats typed newlines
+    if (val === undefined || val === htmlContent.value) return;
+    htmlContent.value = val.trim();
   },
   {
     immediate: true,
   },
 );
+
+watch(htmlContent, (val) => emit("update:html", val));
 </script>
 
 <template>
@@ -34,10 +56,10 @@ watch(
   >
     <!-- Main header -->
     <div
-      class="flex items-center gap-3 border-b border-[var(--vp-c-divider)] bg-[var(--vp-c-bg-soft)] px-3 py-2"
+      class="flex flex-wrap items-center gap-3 border-b border-[var(--vp-c-divider)] bg-[var(--vp-c-bg-soft)] px-3 py-2"
     >
       <LayoutToggle v-model="layout" />
-      <div class="ml-auto flex items-center gap-4">
+      <div class="ml-auto flex flex-wrap items-center gap-4">
         <label
           class="flex cursor-pointer items-center gap-1.5 text-xs text-[var(--vp-c-text-2)] select-none focus-within:outline-2 focus-within:outline-sky-700 focus-within:outline-offset-2 rounded-sm"
         >
@@ -58,6 +80,16 @@ watch(
           />
           Warnungen
         </label>
+        <label
+          class="flex cursor-pointer items-center gap-1.5 text-xs text-[var(--vp-c-text-2)] select-none focus-within:outline-2 focus-within:outline-sky-700 focus-within:outline-offset-2 rounded-sm"
+        >
+          <input
+            type="checkbox"
+            v-model="showPreview"
+            class="cursor-pointer accent-sky-400"
+          />
+          Vorschau
+        </label>
       </div>
     </div>
 
@@ -68,6 +100,11 @@ watch(
         class="border-b border-[var(--vp-c-divider)]"
       />
       <TreePanel :nodes="nodes" :show-all="showAll" :show-warn="showWarn" />
+      <PreviewPanel
+        v-if="showPreview"
+        :html="htmlContent"
+        class="border-t border-[var(--vp-c-divider)]"
+      />
     </template>
 
     <!-- Side by side layout -->
@@ -80,6 +117,11 @@ watch(
           <TreePanel :nodes="nodes" :show-all="showAll" :show-warn="showWarn" />
         </div>
       </div>
+      <PreviewPanel
+        v-if="showPreview"
+        :html="htmlContent"
+        class="border-t border-[var(--vp-c-divider)]"
+      />
     </template>
 
     <!-- Tabs layout -->
@@ -91,32 +133,20 @@ watch(
         aria-label="Panel wählen"
       >
         <button
+          v-for="tab in tabs"
+          :key="tab.id"
           role="tab"
-          :aria-selected="activeTab === 'editor'"
-          :aria-controls="'tab-panel-editor'"
-          @click="activeTab = 'editor'"
+          :aria-selected="activeTab === tab.id"
+          :aria-controls="`tab-panel-${tab.id}`"
+          @click="activeTab = tab.id"
           class="-mb-px border-b-2 px-4 py-2 text-xs font-medium transition-colors"
           :class="
-            activeTab === 'editor'
-              ? 'border-sky-400 text-[var(--vp-c-text-1)]'
-              : 'border-transparent text-[var(--vp-c-text-3)] hover:text-[var(--vp-c-text-2)]'
-          "
-        >
-          HTML-Editor
-        </button>
-        <button
-          role="tab"
-          :aria-selected="activeTab === 'tree'"
-          :aria-controls="'tab-panel-tree'"
-          @click="activeTab = 'tree'"
-          class="-mb-px border-b-2 px-4 py-2 text-xs font-medium transition-colors"
-          :class="
-            activeTab === 'tree'
+            activeTab === tab.id
               ? 'border-sky-500 text-[var(--vp-c-text-1)]'
               : 'border-transparent text-[var(--vp-c-text-3)] hover:text-[var(--vp-c-text-2)]'
           "
         >
-          Accessibility Tree
+          {{ tab.label }}
         </button>
       </div>
 
@@ -140,6 +170,14 @@ watch(
           :show-warn="showWarn"
           :show-label="false"
         />
+      </div>
+      <div
+        v-if="showPreview"
+        id="tab-panel-preview"
+        role="tabpanel"
+        :hidden="activeTab !== 'preview'"
+      >
+        <PreviewPanel :html="htmlContent" :show-label="false" />
       </div>
     </template>
 
