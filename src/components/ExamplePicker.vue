@@ -33,7 +33,7 @@ const GROUPS: { group: Example["group"]; label: string }[] = [
           <a
             :href="`#${ex.id}`"
             :aria-current="ex.id === currentId ? 'true' : undefined"
-            class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm no-underline transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-700"
+            class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm no-underline transition-colors focus-visible:outline-2 outline-offset-2 outline-sky-700"
             :class="
               ex.id === currentId
                 ? 'border-sky-600 bg-sky-600 text-white'
@@ -57,7 +57,7 @@ const GROUPS: { group: Example["group"]; label: string }[] = [
     <button
       v-if="isEdited(currentId)"
       type="button"
-      class="ml-auto inline-flex items-center gap-1.5 self-end rounded-md border border-[var(--vp-c-divider)] px-3 py-1 text-sm text-[var(--vp-c-text-2)] hover:text-[var(--vp-c-text-1)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-700"
+      class="ml-auto inline-flex items-center gap-1.5 self-end rounded-md border border-[var(--vp-c-divider)] px-3 py-1 text-sm text-[var(--vp-c-text-2)] hover:text-[var(--vp-c-text-1)] focus-visible:outline-2 outline-offset-2 outline-sky-700"
       @click="emit('reset')"
     >
       <RotateCcw :size="14" aria-hidden="true" />

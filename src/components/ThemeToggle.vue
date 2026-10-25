@@ -26,7 +26,7 @@ const options: { value: ThemeMode; label: string; icon: LucideIcon }[] = [
       :aria-label="opt.label"
       :title="opt.label"
       @click="emit('update:modelValue', opt.value)"
-      class="flex h-8 w-8 items-center justify-center rounded transition-colors focus-visible:outline-2 focus-visible:outline-sky-700"
+      class="flex h-8 w-8 items-center justify-center rounded transition-colors focus-visible:outline-2 outline-sky-700"
       :class="
         modelValue === opt.value
           ? 'bg-[var(--vp-c-bg-soft)] text-[var(--vp-c-text-1)] shadow-sm'

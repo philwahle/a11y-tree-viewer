@@ -153,7 +153,7 @@ watch(htmlContent, (val) => emit("update:html", val));
           :aria-selected="activeTab === tab.id"
           :aria-controls="`tab-panel-${tab.id}`"
           @click="activeTab = tab.id"
-          class="-mb-px border-b-2 px-4 py-2 text-xs font-medium transition-colors"
+          class="-mb-px border-b-2 px-4 py-2 text-xs font-medium transition-colors focus-visible:outline-2 -outline-offset-2 outline-sky-700"
           :class="
             activeTab === tab.id
               ? 'border-sky-500 text-[var(--vp-c-text-1)]'

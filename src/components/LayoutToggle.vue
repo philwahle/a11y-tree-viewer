@@ -27,7 +27,7 @@ const options: Option[] = [
       :title="opt.label"
       name="layout"
       @click="emit('update:modelValue', opt.value)"
-      class="flex h-7 w-7 items-center justify-center rounded transition-colors"
+      class="flex h-7 w-7 items-center justify-center rounded transition-colors focus-visible:outline-2 outline-sky-700"
       :class="
         modelValue === opt.value
           ? 'bg-[var(--vp-c-bg-soft)] text-[var(--vp-c-text-1)] shadow-sm'
