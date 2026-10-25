@@ -99,7 +99,7 @@ export const getNativeRole = (el: Element): NativeRole | null => {
         button: "button",
         reset: "button",
         image: "button",
-      } satisfies Record<string, string>;
+      } as Record<string, string>;
       role = m[type] || "textbox";
       break;
     }
@@ -176,6 +176,8 @@ export const getNativeRole = (el: Element): NativeRole | null => {
     default:
       role = null;
   }
+
+  return role ? { role, source: "implicit" } : null;
 };
 
 const getAttributesFromElement = (el: Element) => {
