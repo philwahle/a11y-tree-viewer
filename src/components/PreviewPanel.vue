@@ -40,7 +40,10 @@ const srcdoc = computed(
       Vorschau
     </div>
     <div class="h-56 resize-y overflow-auto">
+      <!-- Re-created on change: updating srcdoc in place would push an entry
+           onto the page's session history for every keystroke -->
       <iframe
+        :key="srcdoc"
         :srcdoc="srcdoc"
         sandbox=""
         title="Gerenderte Vorschau des HTML-Codes"
