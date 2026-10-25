@@ -39,7 +39,7 @@ function buildNode(el: Element, doc: Document): A11yNode | null {
   if (SKIP_TAGS.has(tag)) return null;
 
   const roleInfo = getNativeRole(el);
-  const nameInfo = getAccName(el, doc);
+  const nameInfo = getAccName(el, doc, roleInfo.role);
   const states = getStates(el);
   const warns = getWarnings(el, roleInfo, nameInfo);
   const attrs = getAttrs(el, tag);
