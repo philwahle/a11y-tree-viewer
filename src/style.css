@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   --vp-c-bg-soft: #f6f6f7;
   --vp-c-bg-mute: #e2e2e3;
@@ -48,4 +50,3 @@ html.dark {
   --vp-c-text-3: #8a8f98;
 }
 
-@import "tailwindcss";
