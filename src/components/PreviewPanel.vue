@@ -1,16 +1,14 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useDarkClass } from "./../composables/useDarkClass";
 
 type Props = {
   html: string;
-  dark?: boolean;
   showLabel?: boolean;
 };
 
-const props = withDefaults(defineProps<Props>(), {
-  dark: false,
-  showLabel: true,
-});
+const props = withDefaults(defineProps<Props>(), { showLabel: true });
+const { isDark } = useDarkClass();
 
 // sandbox="" blocks scripts, form submission and popups; base target="_blank"
 // turns link clicks into blocked popups instead of navigating the frame.
@@ -21,8 +19,8 @@ const srcdoc = computed(
 <meta charset="utf-8">
 <base target="_blank">
 <style>
-  :root { color-scheme: ${props.dark ? "dark" : "light"}; }
-  body { margin: 1rem; font: 16px/1.5 system-ui, sans-serif; }
+  :root { color-scheme: ${isDark.value ? "dark" : "light"}; }
+  body { margin: 1rem; font: 16px/1.5 system-ui, sans-serif; background: ${isDark.value ? "#1b1b1f" : "#fff"}; }
   :focus-visible { outline: 3px solid #0284c7; outline-offset: 2px; }
 </style>
 </head>

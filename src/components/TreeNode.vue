@@ -68,14 +68,15 @@ const INFO = new Set(["level", "required", "modal", "haspopup"]);
 
 function stateBadgeClass(key: string, val: string): string {
   if (HI.has(key) && val !== "false")
-    return "text-amber-600 border-amber-600/30";
+    return "text-amber-600 border-amber-600/30 vdark:text-amber-400 vdark:border-amber-400/30";
 
   if (WARN_STATES.has(key) && val !== "false")
-    return "text-red-600 border-red-600/25";
+    return "text-red-600 border-red-600/25 vdark:text-red-400 vdark:border-red-400/30";
 
-  if (INFO.has(key)) return "text-sky-600 border-sky-600/25";
+  if (INFO.has(key))
+    return "text-sky-600 border-sky-600/25 vdark:text-sky-400 vdark:border-sky-400/30";
 
-  return "text-slate-600 border-slate-600/25";
+  return "text-slate-600 border-slate-600/25 vdark:text-slate-300 vdark:border-slate-300/25";
 }
 
 function esc(s: string): string {
@@ -87,9 +88,9 @@ const tagHtml = computed(() => {
   let html = `<span class="text-[var(--vp-c-text-2)]">&lt;${esc(tag)}</span>`;
   for (const { name, val } of attrs) {
     html +=
-      ` <span class="text-blue-700/70">${esc(name)}</span>` +
+      ` <span class="text-blue-700/70 vdark:text-blue-300/80">${esc(name)}</span>` +
       `<span class="text-[var(--vp-c-text-2)]">=</span>` +
-      `<span class="text-sky-700/80">${esc(val)}</span>`;
+      `<span class="text-sky-700/80 vdark:text-sky-300/80">${esc(val)}</span>`;
   }
   html += `<span class="text-[var(--vp-c-text-2)]">&gt;</span>`;
   return html;
@@ -141,7 +142,6 @@ const roleTooltip = computed(() => {
         <component
           v-if="BADGE_ICONS[cat]"
           :is="BADGE_ICONS[cat]"
-          arira-hidden="true"
           :size="12"
           aria-hidden="true"
         />
