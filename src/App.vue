@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import A11yTreeViewer from "./components/A11yTree.vue";
 </script>
 
 <template>
-  <HelloWorld />
+  <A11yTreeViewer />
 </template>
