@@ -12,13 +12,18 @@ Der Viewer macht diesen sonst unsichtbaren Baum sichtbar. Er eignet sich für Le
 
 ## Funktionen
 
+- **Beispiele** zu Rolle, Name, Ausblenden, Zustand und Struktur sowie zu eigenen Widgets, Seitengerüst, Formularen, Tabellen und Live Regions – direkt verlinkbar (z. B. `#block-4`); eigene Änderungen bleiben pro Beispiel gespeichert und lassen sich zurücksetzen
 - **HTML-Editor** mit Syntax-Highlighting (CodeMirror)
 - **Accessibility Tree** mit Rolle, barrierefreiem Name und Zuständen je Element, live aktualisiert
+- **Live-Vorschau** des HTML in einem abgeschotteten iframe (ohne Skripte), um Fokus und Tastaturbedienung selbst auszuprobieren
 - **Implizite und explizite Rollen**: Native HTML-Semantik und `role`-Attribute werden unterschieden
 - **Warnungen** für typische Probleme, z. B. fehlendes `alt`, fehlender barrierefreier Name, fehlendes `tabindex` oder Tabellen ohne `<th>`
 - **Filter**: nur relevante Knoten oder alle Elemente anzeigen, Warnungen ein- und ausblenden
 - **Legende** der Kategorien: Landmark, Interaktiv, Struktur, Live Region, Explizit
 - **Drei Layouts**: vertikal gestapelt, nebeneinander oder als Tabs (die Auswahl wird gespeichert)
+- **Hell, dunkel oder wie das System**
+
+Der Viewer ist ein vereinfachtes Lernmodell. Einige Vereinfachungen sind gewollt und Teil der Übung, z. B. zeigt er `disabled` auch auf einem `<div>` an und vererbt `disabled` nicht vom `<fieldset>` an enthaltene Felder.
 
 ## Lokal starten
 
@@ -33,6 +38,7 @@ Weitere Skripte:
 
 | Befehl            | Beschreibung                                  |
 | ----------------- | --------------------------------------------- |
+| `npm test`        | Tests (Vitest), laufen auch vor jedem Deploy  |
 | `npm run build`   | Typprüfung und Produktions-Build nach `dist/` |
 | `npm run preview` | Lokale Vorschau des Produktions-Builds        |
 
