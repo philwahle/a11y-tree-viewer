@@ -1,5 +1,5 @@
 import { computed, onMounted, onUnmounted, ref } from "vue";
-import { DEFAULT_EXAMPLE_ID, findExample, type Example } from "../examples";
+import { EXAMPLES, type Example } from "../examples";
 
 const STORAGE_KEY = "a11y-tree-edits";
 
@@ -22,20 +22,22 @@ function saveEdits(edits: Edits) {
   }
 }
 
-function idFromHash(): string {
-  const id = decodeURIComponent(location.hash.slice(1));
-  return findExample(id) ? id : DEFAULT_EXAMPLE_ID;
-}
-
 /**
  * Selected example synced with the URL hash, plus per-example edits that
  * survive switching and reloading.
  */
-export function useExamples() {
+export function useExamples(examples: Example[] = EXAMPLES) {
+  const find = (id: string) => examples.find((e) => e.id === id);
+
+  function idFromHash(): string {
+    const id = decodeURIComponent(location.hash.slice(1));
+    return find(id) ? id : examples[0].id;
+  }
+
   const currentId = ref(idFromHash());
   const edits = ref<Edits>(loadEdits());
 
-  const current = computed<Example>(() => findExample(currentId.value)!);
+  const current = computed<Example>(() => find(currentId.value)!);
 
   const html = computed({
     get: () => edits.value[currentId.value] ?? current.value.html,

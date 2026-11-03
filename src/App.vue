@@ -40,6 +40,11 @@ const { mode } = useTheme();
             Wählen Sie ein Beispiel, verändern Sie den Code im Editor und
             beobachten Sie, wie sich der Baum live anpasst.
           </p>
+          <p>
+            <a href="name.html" class="font-semibold text-sky-700 underline underline-offset-4 vdark:text-sky-300 focus-visible:outline-2 outline-offset-2 outline-sky-700">
+              Woher kommt der Name? Zur Namensberechnung
+            </a>
+          </p>
         </div>
 
         <aside

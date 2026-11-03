@@ -339,7 +339,13 @@ export function computeName(
       src: "aria-label",
       ref: ACCNAME_STEPS,
     },
-    ...kindsFor(rule, role).map((k) => readKind(k, el, doc)),
+    ...kindsFor(rule, role).map((k) => {
+      const reading = readKind(k, el, doc);
+      // Headings and cells: allowed by their role, not listed by HTML-AAM
+      return k === "content" && !rule.kinds.includes("content")
+        ? { ...reading, ref: ACCNAME_STEPS, note: reading.note || "Rolle erlaubt Namen aus dem Inhalt" }
+        : reading;
+    }),
   ];
 
   // alt="" (used, but empty) ends the search: the tooltip is only for a missing alt

@@ -35,7 +35,7 @@ function getAttrs(el: Element, tag: string): AttrPair[] {
   return attrs;
 }
 
-function buildNode(el: Element, doc: Document): A11yNode | null {
+function buildNode(el: Element, doc: Document, path: string): A11yNode | null {
   const tag = el.tagName.toLowerCase();
   if (SKIP_TAGS.has(tag)) return null;
 
@@ -46,9 +46,10 @@ function buildNode(el: Element, doc: Document): A11yNode | null {
   const states = getStates(el);
   const warns = getWarnings(el, roleInfo, nameInfo);
   const attrs = getAttrs(el, tag);
-  const children = buildChildren(el, doc);
+  const children = buildChildren(el, doc, path);
 
   return {
+    path,
     tag,
     roleInfo,
     nameInfo,
@@ -62,10 +63,11 @@ function buildNode(el: Element, doc: Document): A11yNode | null {
   };
 }
 
-function buildChildren(parent: Element, doc: Document): A11yNode[] {
+function buildChildren(parent: Element, doc: Document, path = ""): A11yNode[] {
   const nodes: A11yNode[] = [];
   for (const child of parent.children) {
-    const node = buildNode(child, doc);
+    const childPath = path ? `${path}.${nodes.length}` : String(nodes.length);
+    const node = buildNode(child, doc, childPath);
     if (node) nodes.push(node);
   }
   return nodes;

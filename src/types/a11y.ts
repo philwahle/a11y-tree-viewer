@@ -62,6 +62,8 @@ export interface AttrPair {
 }
 
 export interface A11yNode {
+  /** Position in the tree, e.g. "0.2", stable across re-parsing the same HTML. */
+  path: string
   tag: string
   roleInfo: RoleInfo
   nameInfo: NameInfo

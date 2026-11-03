@@ -20,7 +20,11 @@ const props = defineProps<{
   node: A11yNode;
   showAll: boolean;
   showWarn: boolean;
+  /** With this set, nodes can be picked to inspect them. */
+  selectedPath?: string;
 }>();
+
+const emit = defineEmits<{ select: [node: A11yNode] }>();
 
 const collapsed = ref(false);
 
@@ -116,6 +120,7 @@ const roleTooltip = computed(() => {
   >
     <div
       class="flex min-h-8 cursor-default flex-wrap items-center gap-1 rounded px-1.5 py-0.5 hover:bg-[var(--vp-c-bg-mute)]"
+      :class="node.path === selectedPath ? 'bg-sky-100 vdark:bg-sky-950' : ''"
     >
       <!-- Collapse children -->
       <button
@@ -136,7 +141,16 @@ const roleTooltip = computed(() => {
       <span v-else class="size-6 shrink-0" aria-hidden="true" />
 
       <!-- Tag with highlighted attributes -->
-      <span v-html="tagHtml" />
+      <button
+        v-if="selectedPath !== undefined"
+        type="button"
+        class="cursor-pointer rounded px-1 text-left underline decoration-dotted underline-offset-4 focus-visible:outline-2 outline-sky-700"
+        :aria-pressed="node.path === selectedPath"
+        @click="emit('select', node)"
+      >
+        <span v-html="tagHtml" />
+      </button>
+      <span v-else v-html="tagHtml" />
 
       <!-- aria-hidden indicator -->
       <span
@@ -221,6 +235,8 @@ const roleTooltip = computed(() => {
         :node="child"
         :show-all="showAll"
         :show-warn="showWarn"
+        :selected-path="selectedPath"
+        @select="emit('select', $event)"
       />
     </div>
   </div>

@@ -6,6 +6,11 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   base: "./",
   plugins: [vue(), tailwindcss()],
+  build: {
+    rollupOptions: {
+      input: ["index.html", "name.html"],
+    },
+  },
   test: {
     environment: "happy-dom",
   },

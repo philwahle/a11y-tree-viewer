@@ -7,9 +7,11 @@ type Props = {
   showAll: boolean;
   showWarn: boolean;
   showLabel?: boolean;
+  selectedPath?: string;
 };
 
 withDefaults(defineProps<Props>(), { showLabel: true });
+defineEmits<{ select: [node: A11yNode] }>();
 </script>
 
 <template>
@@ -33,6 +35,8 @@ withDefaults(defineProps<Props>(), { showLabel: true });
         :node="node"
         :show-all="showAll"
         :show-warn="showWarn"
+        :selected-path="selectedPath"
+        @select="$emit('select', $event)"
       />
     </div>
   </div>
