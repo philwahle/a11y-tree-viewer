@@ -22,6 +22,9 @@ Der Viewer macht diesen sonst unsichtbaren Baum sichtbar. Er eignet sich für Le
 - **Legende** der Kategorien: Landmark, Interaktiv, Struktur, Live Region, Explizit
 - **Drei Layouts**: vertikal gestapelt, nebeneinander oder als Tabs (die Auswahl wird gespeichert)
 - **Hell, dunkel oder wie das System**
+- **Namensberechnung** (`name.html`): zeigt für jedes Element im Baum jede geprüfte Quelle für Name und Description, also was verwendet wurde, nicht gesetzt ist, leer ist oder verloren hat, mit Link zur passenden Regel in HTML-AAM
+
+Name und Description folgen [AccName 1.2](https://www.w3.org/TR/accname-1.2/) und [HTML-AAM](https://www.w3.org/TR/html-aam-1.0/), nicht dem Verhalten eines bestimmten Browsers. Ein Abgleich mit Chrome 146 zeigte drei Abweichungen: Chrome behält das `aria-label` auf Rollen ohne erlaubten Namen (z. B. `div`), nimmt `figcaption` nicht als Namen eines `img` und bildet keinen Namen für `tr` aus dem Inhalt. Stylesheets, `::before`/`::after`, Shadow DOM und `aria-owns` wertet das Tool nicht aus.
 
 Der Viewer ist ein vereinfachtes Lernmodell. Einige Vereinfachungen sind gewollt und Teil der Übung, z. B. zeigt er `disabled` auch auf einem `<div>` an und vererbt `disabled` nicht vom `<fieldset>` an enthaltene Felder.
 
