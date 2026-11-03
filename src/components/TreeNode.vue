@@ -158,6 +158,15 @@ const roleTooltip = computed(() => {
         "{{ node.nameInfo.name.replace(/"/g, "'") }}"
       </span>
 
+      <!-- Accessible description -->
+      <span
+        v-if="node.descInfo.description"
+        class="vdark:text-slate-300 max-w-80 cursor-help overflow-hidden text-sm text-ellipsis whitespace-nowrap text-slate-600"
+        :title="`Description-Quelle: ${node.descInfo.src}`"
+      >
+        Description: "{{ node.descInfo.description.replace(/"/g, "'") }}"
+      </span>
+
       <!-- State badges -->
       <span
         v-for="[key, val] in Object.entries(node.states)"

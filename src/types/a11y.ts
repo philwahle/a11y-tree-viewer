@@ -12,6 +12,11 @@ export interface NameInfo {
   src: string
 }
 
+export interface DescInfo {
+  description: string
+  src: string
+}
+
 export interface SpecRef {
   label: string
   url: string
@@ -61,6 +66,8 @@ export interface A11yNode {
   roleInfo: RoleInfo
   nameInfo: NameInfo
   nameTrace: NameTrace
+  descInfo: DescInfo
+  descSteps: Step[]
   states: States
   warns: string[]
   children: A11yNode[]
