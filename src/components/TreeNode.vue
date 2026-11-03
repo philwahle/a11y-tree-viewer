@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import TreeNode from "./TreeNode.vue";
 import { getRoleCat, ROLE_DESC } from "./../a11y/roles";
 import type { A11yNode, RoleCategory } from "./../types/a11y";
 
 import {
+  ChevronRight,
   Compass,
   MousePointerClick,
   ListTree,
@@ -20,6 +21,8 @@ const props = defineProps<{
   showAll: boolean;
   showWarn: boolean;
 }>();
+
+const collapsed = ref(false);
 
 const role = computed(() => props.node.roleInfo.role);
 const src = computed(() => props.node.roleInfo.source);
@@ -114,6 +117,24 @@ const roleTooltip = computed(() => {
     <div
       class="flex min-h-8 cursor-default flex-wrap items-center gap-1 rounded px-1.5 py-0.5 hover:bg-[var(--vp-c-bg-mute)]"
     >
+      <!-- Collapse children -->
+      <button
+        v-if="node.children.length"
+        type="button"
+        class="grid size-6 shrink-0 cursor-pointer place-items-center rounded text-[var(--vp-c-text-2)] hover:bg-[var(--vp-c-bg-soft)] focus-visible:outline-2 outline-sky-700"
+        :aria-expanded="!collapsed"
+        :aria-label="`Kinder von <${node.tag}>`"
+        @click="collapsed = !collapsed"
+      >
+        <ChevronRight
+          :size="14"
+          aria-hidden="true"
+          class="motion-safe:transition-transform"
+          :class="collapsed ? '' : 'rotate-90'"
+        />
+      </button>
+      <span v-else class="size-6 shrink-0" aria-hidden="true" />
+
       <!-- Tag with highlighted attributes -->
       <span v-html="tagHtml" />
 
@@ -191,7 +212,7 @@ const roleTooltip = computed(() => {
 
     <!-- Children -->
     <div
-      v-if="node.children.length"
+      v-if="node.children.length && !collapsed"
       class="ml-4 border-l border-[var(--vp-c-divider)] pl-2.5"
     >
       <TreeNode
