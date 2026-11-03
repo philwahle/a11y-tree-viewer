@@ -1,5 +1,5 @@
 import type { A11yNode, AttrPair } from "../types/a11y";
-import { getAccName } from "./name";
+import { computeName } from "./name";
 import { getNativeRole, SKIP_TAGS } from "./roles";
 import { getStates } from "./states";
 import { getWarnings } from "./warnings";
@@ -39,13 +39,14 @@ function buildNode(el: Element, doc: Document): A11yNode | null {
   if (SKIP_TAGS.has(tag)) return null;
 
   const roleInfo = getNativeRole(el);
-  const nameInfo = getAccName(el, doc, roleInfo.role);
+  const { name, src, trace: nameTrace } = computeName(el, doc, roleInfo.role);
+  const nameInfo = { name, src };
   const states = getStates(el);
   const warns = getWarnings(el, roleInfo, nameInfo);
   const attrs = getAttrs(el, tag);
   const children = buildChildren(el, doc);
 
-  return { tag, roleInfo, nameInfo, states, warns, children, attrs };
+  return { tag, roleInfo, nameInfo, nameTrace, states, warns, children, attrs };
 }
 
 function buildChildren(parent: Element, doc: Document): A11yNode[] {

@@ -254,7 +254,7 @@ function getImplicitRole(el: Element, tag: string): string | null {
     case "section":
       return hasName ? "region" : null;
     case "img":
-      return el.getAttribute("alt") === "" ? "presentation" : "img";
+      return el.getAttribute("alt") === "" && !hasName ? "presentation" : "img";
     case "input": {
       const type = (el.getAttribute("type") || "text").toLowerCase();
       if (type === "hidden") return null;
