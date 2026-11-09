@@ -5,7 +5,7 @@ export type Example = {
   label: string;
   title: string;
   description: string;
-  group: "uebung" | "weitere" | "eigenes";
+  group: "name" | "uebung" | "weitere" | "eigenes";
   html: string;
 };
 
@@ -285,6 +285,132 @@ export const EXAMPLES: Example[] = [
 ];
 
 export const DEFAULT_EXAMPLE_ID = EXAMPLES[0].id;
+
+/** Examples of the name computation page. */
+export const NAME_EXAMPLES: Example[] = [
+  {
+    id: "title",
+    label: "title",
+    title: "title — Name oder Description",
+    description:
+      "title ist eine der schwächsten Quellen. Gibt es einen stärkeren Namen, wird title zur Description. Klicken Sie im Baum auf ein Element, um die Berechnung zu sehen.",
+    group: "name",
+    html: `<!-- Inhalt gewinnt, title wird zur Description -->
+<button title="Bestellung verbindlich absenden">Senden</button>
+
+<!-- aria-label gewinnt, title wird zur Description -->
+<input aria-label="Suche" title="Stichwort eingeben">
+
+<!-- Nichts Stärkeres da: title wird zum Namen, Description bleibt leer -->
+<input title="Suche">`,
+  },
+  {
+    id: "rangfolge",
+    label: "Rangfolge",
+    title: "Rangfolge — wer gewinnt beim Eingabefeld",
+    description:
+      "Löschen Sie im Editor von oben nach unten je eine Quelle und beobachten Sie, welche als Nächste greift.",
+    group: "name",
+    html: `<span id="titel">aria-labelledby</span>
+<label for="feld">label</label>
+<input
+  id="feld"
+  aria-labelledby="titel"
+  aria-label="aria-label"
+  title="title"
+  placeholder="placeholder"
+  aria-placeholder="aria-placeholder"
+>`,
+  },
+  {
+    id: "elemente",
+    label: "Je Element",
+    title: "Je Element — die Kette hängt vom Tag ab",
+    description:
+      "Derselbe title verliert beim Button gegen den Inhalt und gewinnt bei der Abbildung. Das Bild nimmt ihn nur ohne alt.",
+    group: "name",
+    html: `<button title="title">Inhalt</button>
+<a href="/" title="title">Inhalt</a>
+<img src="a.png" alt="alt" title="title">
+<img src="a.png" title="title">
+<input type="submit" value="value" title="title">
+<fieldset title="title"><legend>legend</legend></fieldset>
+<table title="title"><caption>caption</caption><tr><th>Kopf</th></tr></table>
+<figure title="title"><img src="a.png" alt="alt"><figcaption>figcaption</figcaption></figure>`,
+  },
+  {
+    id: "verboten",
+    label: "Kein Name erlaubt",
+    title: "Kein Name erlaubt — Rollen, die nicht benannt werden dürfen",
+    description:
+      "generic, paragraph und strong dürfen keinen Namen haben. Mit einer passenden Rolle ändert sich das.",
+    group: "name",
+    html: `<div aria-label="wird ignoriert">Text</div>
+<p aria-label="wird ignoriert">Text</p>
+<span title="wird als Description genutzt">Text</span>
+
+<!-- Erst die Rolle erlaubt den Namen -->
+<div role="group" aria-label="Versand">Text</div>`,
+  },
+  {
+    id: "inhalt",
+    label: "Aus dem Inhalt",
+    title: "Aus dem Inhalt — Name aus den Kindelementen",
+    description:
+      "Der Name entsteht rekursiv: aria-label, alt und title von Kindern zählen, versteckte Kinder nicht.",
+    group: "name",
+    html: `<button><span aria-label="Schließen">×</span></button>
+<a href="/"><img src="logo.png" alt="Startseite"> öffnen</a>
+<button>Speichern <span hidden>versteckt</span><span aria-hidden="true">💾</span></button>
+<button><div>Zwei</div><div>Blöcke</div></button>
+<button><b>Zwei</b><i>Inline</i></button>`,
+  },
+  {
+    id: "verweise",
+    label: "Verweise",
+    title: "Verweise — aria-labelledby und aria-describedby",
+    description:
+      "Verweisziele dürfen versteckt sein. Ein Verweis wird nur einmal verfolgt, und ein Element kann auf sich selbst verweisen.",
+    group: "name",
+    html: `<!-- Verstecktes Ziel zählt trotzdem -->
+<span id="verborgen" hidden>Suche</span>
+<input aria-labelledby="verborgen">
+
+<!-- Selbstverweis kombiniert das eigene aria-label mit dem Ziel -->
+<span id="datei">Bericht.pdf</span>
+<button id="loeschen" aria-label="Löschen" aria-labelledby="loeschen datei"></button>
+
+<!-- Beschreibung per Verweis -->
+<p id="hinweis">Mindestens 12 Zeichen.</p>
+<input aria-label="Passwort" aria-describedby="hinweis">
+
+<!-- Ziel gibt es nicht -->
+<input aria-labelledby="gibt-es-nicht" placeholder="Fällt durch">`,
+  },
+  {
+    id: "eingebettet",
+    label: "Eingebettetes Feld",
+    title: "Eingebettetes Feld — ein Wert im Label",
+    description:
+      "Steht ein Feld im Label eines anderen Felds, fließt sein Wert in den Namen ein. Der eigene Wert eines Felds zählt nie.",
+    group: "name",
+    html: `<!-- Name der Checkbox: „Alle 3 Tage erinnern“ -->
+<input type="checkbox" id="erinnern">
+<label for="erinnern">Alle <input value="3" aria-label="Tage"> Tage erinnern</label>
+
+<!-- Eigener Wert zählt nicht: Name ist „Menge“ -->
+<label>Menge <input value="3"></label>`,
+  },
+  {
+    id: "eigenes",
+    label: "Eigenes Beispiel",
+    title: "Eigenes Beispiel",
+    description:
+      "Fügen Sie einen HTML-Ausschnitt von einer echten Webseite ein und prüfen Sie, woher jedes Element seinen Namen bekommt.",
+    group: "eigenes",
+    html: `<!-- Fügen Sie hier einen Schnipsel von einer echten Webseite ein  -->\n\n\n`,
+  },
+];
 
 export function findExample(id: string): Example | undefined {
   return EXAMPLES.find((e) => e.id === id);

@@ -1,7 +1,7 @@
 // Each preset must show what its description promises.
 import { describe, expect, it } from "vitest";
 import { buildTree } from "../a11y/tree";
-import { EXAMPLES, findExample } from "../examples";
+import { EXAMPLES, findExample, NAME_EXAMPLES } from "../examples";
 import { byRole, byTag, find, findAll } from "./helpers";
 
 const treeOf = (id: string) => buildTree(findExample(id)!.html);
@@ -84,5 +84,81 @@ describe("Presets", () => {
       source: "native",
     });
     expect(find(nodes, byTag("progress")).roleInfo.role).toBe("progressbar");
+  });
+});
+
+describe("Beispiele der Namensberechnung", () => {
+  const treeFor = (id: string) =>
+    buildTree(NAME_EXAMPLES.find((e) => e.id === id)!.html);
+
+  it("haben eindeutige ids", () => {
+    const ids = NAME_EXAMPLES.map((e) => e.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it("title: wird Description oder Name", () => {
+    const nodes = treeFor("title");
+    expect(find(nodes, byTag("button")).nameInfo.name).toBe("Senden");
+    expect(find(nodes, byTag("button")).descInfo.description).toContain("verbindlich");
+    const [search, titled] = findAll(nodes, byTag("input"));
+    expect(search.descInfo.description).toBe("Stichwort eingeben");
+    expect(titled.nameInfo.src).toBe("title");
+    expect(titled.descInfo.description).toBe("");
+  });
+
+  it("Rangfolge: aria-labelledby gewinnt, alle anderen verlieren", () => {
+    const input = find(treeFor("rangfolge"), byTag("input"));
+    expect(input.nameInfo.src).toBe("aria-labelledby");
+    const outranked = input.nameTrace.steps.filter((s) => s.status === "outranked");
+    expect(outranked.map((s) => s.source)).toEqual([
+      "aria-label",
+      "<label>",
+      "title",
+      "placeholder",
+      "aria-placeholder",
+    ]);
+  });
+
+  it("Je Element: title verliert oder gewinnt je nach Tag", () => {
+    const nodes = treeFor("elemente");
+    expect(find(nodes, byTag("button")).nameInfo.name).toBe("Inhalt");
+    const [withAlt, noAlt] = findAll(nodes, (n) => n.tag === "img" && n.nameInfo.src !== "none");
+    expect(withAlt.nameInfo.src).toBe("alt");
+    expect(noAlt.nameInfo.src).toBe("title");
+    expect(find(nodes, byTag("fieldset")).nameInfo.name).toBe("legend");
+    expect(find(nodes, byTag("table")).nameInfo.name).toBe("caption");
+    expect(find(nodes, byTag("figure")).nameInfo.src).toBe("title");
+  });
+
+  it("Kein Name erlaubt: nur die Rolle group wird benannt", () => {
+    const nodes = treeFor("verboten");
+    expect(nodes.map((n) => n.nameInfo.name)).toEqual(["", "", "", "Versand"]);
+  });
+
+  it("Aus dem Inhalt: Rekursion und Abstände", () => {
+    const nodes = treeFor("inhalt");
+    expect(nodes.map((n) => n.nameInfo.name)).toEqual([
+      "Schließen",
+      "Startseite öffnen",
+      "Speichern",
+      "Zwei Blöcke",
+      "ZweiInline",
+    ]);
+  });
+
+  it("Verweise: Ziele, Selbstverweis und fehlende id", () => {
+    const nodes = treeFor("verweise");
+    const [search, password, missing] = findAll(nodes, byTag("input"));
+    expect(search.nameInfo.name).toBe("Suche");
+    expect(find(nodes, byTag("button")).nameInfo.name).toBe("Löschen Bericht.pdf");
+    expect(password.descInfo.description).toBe("Mindestens 12 Zeichen.");
+    expect(missing.nameInfo.src).toBe("placeholder");
+  });
+
+  it("Eingebettetes Feld: Wert anderer Felder zählt, eigener nicht", () => {
+    const nodes = treeFor("eingebettet");
+    const [checkbox, , quantity] = findAll(nodes, byTag("input"));
+    expect(checkbox.nameInfo.name).toBe("Alle 3 Tage erinnern");
+    expect(quantity.nameInfo.name).toBe("Menge");
   });
 });

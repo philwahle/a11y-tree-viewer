@@ -1,5 +1,6 @@
 import type { A11yNode, AttrPair } from "../types/a11y";
-import { getAccName } from "./name";
+import { computeDescription } from "./description";
+import { computeName } from "./name";
 import { getNativeRole, SKIP_TAGS } from "./roles";
 import { getStates } from "./states";
 import { getWarnings } from "./warnings";
@@ -34,24 +35,39 @@ function getAttrs(el: Element, tag: string): AttrPair[] {
   return attrs;
 }
 
-function buildNode(el: Element, doc: Document): A11yNode | null {
+function buildNode(el: Element, doc: Document, path: string): A11yNode | null {
   const tag = el.tagName.toLowerCase();
   if (SKIP_TAGS.has(tag)) return null;
 
   const roleInfo = getNativeRole(el);
-  const nameInfo = getAccName(el, doc, roleInfo.role);
+  const { name, src, trace: nameTrace } = computeName(el, doc, roleInfo.role);
+  const nameInfo = { name, src };
+  const { steps: descSteps, ...descInfo } = computeDescription(el, doc, nameInfo);
   const states = getStates(el);
   const warns = getWarnings(el, roleInfo, nameInfo);
   const attrs = getAttrs(el, tag);
-  const children = buildChildren(el, doc);
+  const children = buildChildren(el, doc, path);
 
-  return { tag, roleInfo, nameInfo, states, warns, children, attrs };
+  return {
+    path,
+    tag,
+    roleInfo,
+    nameInfo,
+    nameTrace,
+    descInfo,
+    descSteps,
+    states,
+    warns,
+    children,
+    attrs,
+  };
 }
 
-function buildChildren(parent: Element, doc: Document): A11yNode[] {
+function buildChildren(parent: Element, doc: Document, path = ""): A11yNode[] {
   const nodes: A11yNode[] = [];
   for (const child of parent.children) {
-    const node = buildNode(child, doc);
+    const childPath = path ? `${path}.${nodes.length}` : String(nodes.length);
+    const node = buildNode(child, doc, childPath);
     if (node) nodes.push(node);
   }
   return nodes;

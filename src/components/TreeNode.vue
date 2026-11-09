@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import TreeNode from "./TreeNode.vue";
 import { getRoleCat, ROLE_DESC } from "./../a11y/roles";
 import type { A11yNode, RoleCategory } from "./../types/a11y";
 
 import {
+  ChevronRight,
   Compass,
   MousePointerClick,
   ListTree,
@@ -19,7 +20,13 @@ const props = defineProps<{
   node: A11yNode;
   showAll: boolean;
   showWarn: boolean;
+  /** With this set, nodes can be picked to inspect them. */
+  selectedPath?: string;
 }>();
+
+const emit = defineEmits<{ select: [node: A11yNode] }>();
+
+const collapsed = ref(false);
 
 const role = computed(() => props.node.roleInfo.role);
 const src = computed(() => props.node.roleInfo.source);
@@ -113,9 +120,37 @@ const roleTooltip = computed(() => {
   >
     <div
       class="flex min-h-8 cursor-default flex-wrap items-center gap-1 rounded px-1.5 py-0.5 hover:bg-[var(--vp-c-bg-mute)]"
+      :class="node.path === selectedPath ? 'bg-sky-100 vdark:bg-sky-950' : ''"
     >
+      <!-- Collapse children -->
+      <button
+        v-if="node.children.length"
+        type="button"
+        class="grid size-6 shrink-0 cursor-pointer place-items-center rounded text-[var(--vp-c-text-2)] hover:bg-[var(--vp-c-bg-soft)] focus-visible:outline-2 outline-sky-700"
+        :aria-expanded="!collapsed"
+        :aria-label="`Kinder von <${node.tag}>`"
+        @click="collapsed = !collapsed"
+      >
+        <ChevronRight
+          :size="14"
+          aria-hidden="true"
+          class="motion-safe:transition-transform"
+          :class="collapsed ? '' : 'rotate-90'"
+        />
+      </button>
+      <span v-else class="size-6 shrink-0" aria-hidden="true" />
+
       <!-- Tag with highlighted attributes -->
-      <span v-html="tagHtml" />
+      <button
+        v-if="selectedPath !== undefined"
+        type="button"
+        class="cursor-pointer rounded px-1 text-left underline decoration-dotted underline-offset-4 focus-visible:outline-2 outline-sky-700"
+        :aria-pressed="node.path === selectedPath"
+        @click="emit('select', node)"
+      >
+        <span v-html="tagHtml" />
+      </button>
+      <span v-else v-html="tagHtml" />
 
       <!-- aria-hidden indicator -->
       <span
@@ -158,6 +193,15 @@ const roleTooltip = computed(() => {
         "{{ node.nameInfo.name.replace(/"/g, "'") }}"
       </span>
 
+      <!-- Accessible description -->
+      <span
+        v-if="node.descInfo.description"
+        class="vdark:text-slate-300 max-w-80 cursor-help overflow-hidden text-sm text-ellipsis whitespace-nowrap text-slate-600"
+        :title="`Description-Quelle: ${node.descInfo.src}`"
+      >
+        Description: "{{ node.descInfo.description.replace(/"/g, "'") }}"
+      </span>
+
       <!-- State badges -->
       <span
         v-for="[key, val] in Object.entries(node.states)"
@@ -182,7 +226,7 @@ const roleTooltip = computed(() => {
 
     <!-- Children -->
     <div
-      v-if="node.children.length"
+      v-if="node.children.length && !collapsed"
       class="ml-4 border-l border-[var(--vp-c-divider)] pl-2.5"
     >
       <TreeNode
@@ -191,6 +235,8 @@ const roleTooltip = computed(() => {
         :node="child"
         :show-all="showAll"
         :show-warn="showWarn"
+        :selected-path="selectedPath"
+        @select="emit('select', $event)"
       />
     </div>
   </div>

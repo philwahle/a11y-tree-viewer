@@ -1,24 +1,34 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import { RotateCcw } from "lucide-vue-next";
 import { EXAMPLES, type Example } from "./../examples";
 
-defineProps<{
-  currentId: string;
-  isEdited: (id: string) => boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    currentId: string;
+    isEdited: (id: string) => boolean;
+    examples?: Example[];
+  }>(),
+  { examples: () => EXAMPLES },
+);
 
 const emit = defineEmits<{ reset: [] }>();
 
 const GROUPS: { group: Example["group"]; label: string }[] = [
+  { group: "name", label: "Namensberechnung" },
   { group: "uebung", label: "Übung" },
   { group: "weitere", label: "Weitere Beispiele" },
   { group: "eigenes", label: "Eigenes" },
 ];
+
+const groups = computed(() =>
+  GROUPS.filter(({ group }) => props.examples.some((e) => e.group === group)),
+);
 </script>
 
 <template>
   <nav aria-label="Beispiele" class="flex flex-wrap items-start gap-x-6 gap-y-3">
-    <div v-for="{ group, label } in GROUPS" :key="group">
+    <div v-for="{ group, label } in groups" :key="group">
       <h2
         :id="`examples-${group}`"
         class="mb-1.5 text-xs font-bold tracking-wider text-[var(--vp-c-text-3)] uppercase"
@@ -29,7 +39,7 @@ const GROUPS: { group: Example["group"]; label: string }[] = [
         :aria-labelledby="`examples-${group}`"
         class="m-0 flex list-none flex-wrap gap-1.5 p-0"
       >
-        <li v-for="ex in EXAMPLES.filter((e) => e.group === group)" :key="ex.id">
+        <li v-for="ex in examples.filter((e) => e.group === group)" :key="ex.id">
           <a
             :href="`#${ex.id}`"
             :aria-current="ex.id === currentId ? 'true' : undefined"
